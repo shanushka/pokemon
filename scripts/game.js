@@ -2,71 +2,116 @@ var ctx = document.getElementById("myCanvas").getContext("2d");
 /* The width and height of the inside of the browser window */
 var height = document.documentElement.clientHeight;
 var width  = document.documentElement.clientWidth;
-
+var size = 32;
 var pointer = { x:0, y:0 };// The adjusted mouse position
+
 function Game(){
   var player = new Player(700, 500);
   var viewport = new Viewport(0, 0, 300, 300);
+  var fps, fpsInterval, startTime, now, then, elapsed;
 
-this.loop =function() {// The game loop
+  this.dirX =0;
+  this.dirY = 0;
   var that=this;
+  this.isKeyDown = false ;
+  this.spriteHeight = 0;
 
-  requestAnimationFrame(that.loop.bind(this));
+// initialize the timer variables and start the animation
+
+this.startAnimating=function(fps) {
+  fpsInterval = 1000 / fps;
+  then = Date.now();
+  startTime = then;
+  this.loop();
+}
+
+
+  this.loop =function() {// The game loop
+  
+    window.addEventListener('keydown',keyDownEvent)
+    window.addEventListener('keyup',keyUpEvent)
+
+    requestAnimationFrame(that.loop.bind(this));
+    // calc elapsed time since last loop
+
+    now = Date.now();
+    elapsed = now - then;
+    // if enough time has elapsed, draw the next frame
+
+    if (elapsed > fpsInterval) {
+        // Get ready for next frame by setting then=now, but also adjust for your
+        // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+    then = now - (elapsed % fpsInterval);
     var height = document.documentElement.clientHeight;
     var width  = document.documentElement.clientWidth;
     /* Resize canvas on every frame */
     ctx.canvas.height = height;
     ctx.canvas.width  = width;
-    player.moveTo(pointer.x, pointer.y);
+
+    player.moveTo(this.dirX,this.dirY);
     viewport.scrollTo(player.x, player.y);
-    /* Get the min and max column and row in the map to draw. */
-    var xMin = Math.floor(viewport.x / scaledSize);
-    var yMin = Math.floor(viewport.y / scaledSize);
-    var xMax = Math.ceil((viewport.x + viewport.w) / scaledSize);
-    var yMax = Math.ceil((viewport.y + viewport.h) / scaledSize);
-
-    /* the min and max column and row values cannot go beyond the boundaries
-    of the map. Those values are 0 and the number of columns and rows in the map. */
-    if (xMin < 0) xMin = 0;
-    if (yMin < 0) yMin = 0;
-    if (xMax> columns) xMax = columns;
-    if (yMax > rows) yMax = rows;
-    var map =new Map(xMin,yMin,xMax,yMax,viewport);
+    var map =new Map(viewport);
     map.drawMap()
-    ctx.drawImage(playerImage, 10, 0, 64,64, Math.round(player.x - viewport.x + width * 0.5 - viewport.w * 0.5), Math.round(player.y - viewport.y + height * 0.5 - viewport.h * 0.5), 64, 64);
-    /* Draw the viewport rectangle. */
+    if(this.isKeyDown){
+      player.updateSprite(this.spriteHeight);
+    }
 
+    // let player_index = Math.floor((player.y + scaledSize * 0.5) / scaledSize) * columns + Math.floor((player.x + scaledSize * 0.5) / scaledSize);
+    // console.log(player_index)
+
+    player.drawPlayer(viewport);
+    /* Draw the viewport rectangle. */
     ctx.strokeStyle = "#ffffff";
     ctx.rect(width * 0.5 - viewport.w * 0.5, height * 0.5 - viewport.h * 0.5, viewport.w, viewport.h);
     ctx.stroke();
   }
 
-  ctx.canvas.addEventListener('keydown',pressEvent)
+  function keyDownEvent(){
+    if(!this.isKeyDown)
+    {
+      that.isKeyDown = true;
+      pressEvent(event);
 
-  ctx.canvas.addEventListener("click", (event) => {
-    pointer.x = event.pageX + viewport.x - width * 0.5 + viewport.w * 0.5;
-    pointer.y = event.pageY + viewport.y - height * 0.5 + viewport.h * 0.5;
-    });
+    }
   }
+  function keyUpEvent(){
+    that.dirX=0,
+    that.dirY=0;
+    that.isKeyDown =  false;
+    }
+  function pressEvent(event) {
+    if (event.keyCode == 37) {
+      that.dirX =-1
+      that.spriteHeight = 1;
+    }
+    if(event.keyCode == 39)
+    {
+      that.dirX = 1;
+      that.spriteHeight = 2;
+    }
+    if(event.keyCode == 38 )
+    {
+      that.dirY = -1
+      that.spriteHeight = 3;
+    }
 
-    function pressEvent(event) {
-      //if (event.keyCode >= 65) {
-        console.log('p');
-
-      //}
-  
+    if(event.keyCode == 40)
+    {
+      that.dirY = 1
+      that.spriteHeight = 0;
+    }
+  }
+}
 }
 var tileSheet = new Image();
 
 tileSheet.addEventListener("load", (event) => { 
   
   var game=new Game();
-  game.loop(); 
+  game.startAnimating(5); 
 
 });
 
 tileSheet.src = "./images/new-map.png";
 var playerImage = new Image();
 playerImage.src="./images/player.png";
-
-

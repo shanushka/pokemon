@@ -14,8 +14,8 @@ Viewport.prototype = {
     // this.y = y - this.w * 0.5;
 
     // Smooth scrolling 
-    this.x += (x - this.x - this.w * 0.5) * 0.05;
-    this.y += (y - this.y - this.h * 0.5) * 0.05;
+    this.x += (x - this.x - this.w * 0.5) * 0.5 ;
+    this.y += (y - this.y - this.h * 0.5) *0.5;
     
     // this.x = Math.max(0, Math.min(this.x, this.maxX));
     // this.y = Math.max(0, Math.min(this.y, this.maxY));
