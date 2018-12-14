@@ -6,10 +6,9 @@ var size = 32;
 var pointer = { x:0, y:0 };// The adjusted mouse position
 
 function Game(){
-  var player = new Player(700, 500);
-  var viewport = new Viewport(0, 0, 300, 300);
+  var player = new Player(300, 905);
+  var viewport = new Viewport(0, 0, 400, 400);
   var fps, fpsInterval, startTime, now, then, elapsed;
-
   this.dirX =0;
   this.dirY = 0;
   var that=this;
@@ -17,27 +16,23 @@ function Game(){
   this.spriteHeight = 0;
 
 // initialize the timer variables and start the animation
-
 this.startAnimating=function(fps) {
   fpsInterval = 1000 / fps;
   then = Date.now();
   startTime = then;
   this.loop();
 }
-
-
   this.loop =function() {// The game loop
-  
+    var map =new Map(viewport);
+
     window.addEventListener('keydown',keyDownEvent)
     window.addEventListener('keyup',keyUpEvent)
 
     requestAnimationFrame(that.loop.bind(this));
     // calc elapsed time since last loop
-
     now = Date.now();
     elapsed = now - then;
     // if enough time has elapsed, draw the next frame
-
     if (elapsed > fpsInterval) {
         // Get ready for next frame by setting then=now, but also adjust for your
         // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
@@ -47,24 +42,21 @@ this.startAnimating=function(fps) {
     /* Resize canvas on every frame */
     ctx.canvas.height = height;
     ctx.canvas.width  = width;
-
-    player.moveTo(this.dirX,this.dirY);
     viewport.scrollTo(player.x, player.y);
-    var map =new Map(viewport);
     map.drawMap()
     if(this.isKeyDown){
+      player.moveTo(this.dirX,this.dirY,map);
       player.updateSprite(this.spriteHeight);
     }
+    // console.log('map',map.mapData)
 
-    // let player_index = Math.floor((player.y + scaledSize * 0.5) / scaledSize) * columns + Math.floor((player.x + scaledSize * 0.5) / scaledSize);
-    // console.log(player_index)
-
-    player.drawPlayer(viewport);
     /* Draw the viewport rectangle. */
     ctx.strokeStyle = "#ffffff";
     ctx.rect(width * 0.5 - viewport.w * 0.5, height * 0.5 - viewport.h * 0.5, viewport.w, viewport.h);
     ctx.stroke();
   }
+  player.drawPlayer(viewport);
+
 
   function keyDownEvent(){
     if(!this.isKeyDown)
