@@ -1,13 +1,19 @@
-var ctx = document.getElementById("myCanvas").getContext("2d");
-/* The width and height of the inside of the browser window */
+canvas = document.getElementById("myCanvas")
+var ctx = canvas.getContext("2d");
 var height = document.documentElement.clientHeight;
 var width  = document.documentElement.clientWidth;
 var size = 32;
 var pointer = { x:0, y:0 };// The adjusted mouse position
+var tileSheet = new Image();
+tileSheet.src = "./images/new-map.png";
+var playerImage = new Image();
+playerImage.src="./images/player.png";
+var isBattleOn = false;  
 
-function Game(){
-  var player = new Player(300, 905);
-  var viewport = new Viewport(0, 0, 400, 400);
+function Game(pokemonId){
+
+  var player = new Player(300, 1005,pokemonId);
+  var viewport = new Viewport(0, 0, 800, 800);
   var fps, fpsInterval, startTime, now, then, elapsed;
   this.dirX =0;
   this.dirY = 0;
@@ -15,21 +21,30 @@ function Game(){
   this.isKeyDown = false ;
   this.spriteHeight = 0;
 
+  this.startBattle=function()
+  {
+    var battle = new Battle(player)
+    battle.createBattle();
+  }
 // initialize the timer variables and start the animation
-this.startAnimating=function(fps) {
-  fpsInterval = 1000 / fps;
-  then = Date.now();
-  startTime = then;
-  this.loop();
-}
-  this.loop =function() {// The game loop
+  this.startAnimating=function(fps) {
+    fpsInterval = 1000 / fps;
+    then = Date.now();
+    startTime = then;
+    this.loop();
+  }
+  this.loop =function() {
     var map =new Map(viewport);
-
     window.addEventListener('keydown',keyDownEvent)
     window.addEventListener('keyup',keyUpEvent)
-
+    if(isBattleOn)
+    { 
+      scoreBoard.remove();
+      this.startBattle();
+      return;
+    }
     requestAnimationFrame(that.loop.bind(this));
-    // calc elapsed time since last loop
+
     now = Date.now();
     elapsed = now - then;
     // if enough time has elapsed, draw the next frame
@@ -40,37 +55,36 @@ this.startAnimating=function(fps) {
     var height = document.documentElement.clientHeight;
     var width  = document.documentElement.clientWidth;
     /* Resize canvas on every frame */
-    ctx.canvas.height = height;
-    ctx.canvas.width  = width;
+    canvas.height = height;
+    canvas.width  = width;
     viewport.scrollTo(player.x, player.y);
+   // ctx.clearRect(0,0,width,height);
     map.drawMap()
     if(this.isKeyDown){
-      player.moveTo(this.dirX,this.dirY,map);
+      player.moveTo(this.dirX,this.dirY,map,canvas.width,canvas.height);
       player.updateSprite(this.spriteHeight);
     }
-    // console.log('map',map.mapData)
-
-    /* Draw the viewport rectangle. */
     ctx.strokeStyle = "#ffffff";
-    ctx.rect(width * 0.5 - viewport.w * 0.5, height * 0.5 - viewport.h * 0.5, viewport.w, viewport.h);
+   // ctx.rect(width * 0.5 - viewport.w * 0.5, height * 0.5 - viewport.h * 0.5, viewport.w, viewport.h);
     ctx.stroke();
+    // console.log("ppp")
   }
   player.drawPlayer(viewport);
-
 
   function keyDownEvent(){
     if(!this.isKeyDown)
     {
       that.isKeyDown = true;
       pressEvent(event);
-
     }
   }
+
   function keyUpEvent(){
     that.dirX=0,
     that.dirY=0;
     that.isKeyDown =  false;
     }
+
   function pressEvent(event) {
     if (event.keyCode == 37) {
       that.dirX =-1
@@ -93,17 +107,5 @@ this.startAnimating=function(fps) {
       that.spriteHeight = 0;
     }
   }
+  }
 }
-}
-var tileSheet = new Image();
-
-tileSheet.addEventListener("load", (event) => { 
-  
-  var game=new Game();
-  game.startAnimating(5); 
-
-});
-
-tileSheet.src = "./images/new-map.png";
-var playerImage = new Image();
-playerImage.src="./images/player.png";
