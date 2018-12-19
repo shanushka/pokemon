@@ -8,8 +8,7 @@ function Pokemon(pokemonObject)
   this.hp = pokemonObject[0].hp;
   this.level = pokemonObject[0].level;
   this.attacks = pokemonObject[0].attacks;
-  this.power = pokemonObject[0].power;
   this.type = pokemonObject[0].type;
-  console.log(this.id,this.img);
+  console.log(this.attacks);
 
 }

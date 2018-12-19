@@ -10,8 +10,6 @@ var Player = function(x, y, pokemonId) {
   this.xPos = 0;
   this.yPos = 0;
   this.flag = true;
-  console.log(this.pokemonId)
-
   this.getPokemonById = function(pokemonId) {
     return pokemonData.filter(function(val) {
       return(val.id=== parseInt(pokemonId));
@@ -39,9 +37,7 @@ var Player = function(x, y, pokemonId) {
 
 Player.prototype = {
   moveTo: function(dx, dy, map,width,height) {
-    /* Gradually moves the player closer to x, y every time moveTo is called. */
     if (!this.collideBackground(map, this.xPos + dx, this.yPos + dy)) {
-      // if()
       this.x += dx * size * 0.25;
       this.y += dy * size * 0.25;
     }
@@ -49,46 +45,28 @@ Player.prototype = {
   },
 
   collideBackground: function(map, xPos, yPos) {
-    //  console.log(this.xPos,this.yPos)
-
-    if (
-      map.mapData[yPos][xPos] == 4 ||
-      map.mapData[yPos][xPos] == 30 ||
-      map.mapData[yPos][xPos] == 31 ||
-      map.mapData[yPos][xPos] == 32 ||
-      map.mapData[yPos][xPos] == 35 ||
-      map.mapData[yPos][xPos] == 33 ||
-      map.mapData[yPos][xPos] == 34 ||
-      map.mapData[yPos][xPos] == 38 ||
-      map.mapData[yPos][xPos] == 39 ||
-      map.mapData[yPos][xPos] == 36 ||
-      map.mapData[yPos][xPos] == 37
-    ) {
+    if(map.mapData[yPos][xPos] == 4 || map.mapData[yPos][xPos] == 30 || map.mapData[yPos][xPos] == 31 ||
+      map.mapData[yPos][xPos] == 32 || map.mapData[yPos][xPos] == 35 ||map.mapData[yPos][xPos] == 33 ||
+      map.mapData[yPos][xPos] == 34 || map.mapData[yPos][xPos] == 38 || map.mapData[yPos][xPos] == 39 ||
+      map.mapData[yPos][xPos] == 36 || map.mapData[yPos][xPos] == 37) {
       return true;
       this.flag = false;
     }
     return false;
+  },
 
-
-     },
-
-    collideGrass:function(map,xPos,yPos)
-    {
-      var randomNo,randomPokemonId
-      if (map.mapData[yPos][xPos] == 1){
-        randomNo=Math.floor(Math.random()*(100-0) + 0)
-        if(randomNo < 5 )
-        {
-          randomPokemonId = Math.floor(Math.random()*(5-0) + 0)
-          this.wildPokemon = new Pokemon(this.getPokemonById(randomPokemonId));
-          console.log('pokemonrand',this.getPokemonById(randomPokemonId));
-          ctx.clearRect(0, 0,width,height);
-          isBattleOn=true;
-          //var battle = new Battle();
-
-        }
+  collideGrass:function(map,xPos,yPos){
+    var randomNo,randomPokemonId
+    if (map.mapData[yPos][xPos] == 1){
+      randomNo=Math.floor(Math.random()*(100-0) + 0)
+      if(randomNo < 5 )
+      {
+        randomPokemonId = Math.floor(Math.random()*(5-0) + 0)
+        this.wildPokemon = new Pokemon(this.getPokemonById(randomPokemonId));
+        console.log('pokemonrand',this.getPokemonById(randomPokemonId));
+        ctx.clearRect(0, 0,width,height);
+        isBattleOn=true;
       }
     }
-
-
+  }
 };
