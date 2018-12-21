@@ -1,41 +1,56 @@
-var battleBackground = new Image();
-var imagePokemonPlayer =new Image();
-var imageWildPokemon =new Image();
-var hpPlayer =new Image();
-var hpOpponent = new Image();
-var attackBackground= new Image();
-var attackBtn = new Image();
 
-hpOpponent.src = './images/hp_opponent.png';
-hpPlayer.src = './images/hp_trainer.png';
-attackBackground.src = './images/attackrect.png';
-attackBtn.src ='./images/attack.png';
+function Preloader(){
+  var that =  this;
+  this.images = {};
+  this.imagesLoaded = 0;
 
+  this.init =  function(){
+    this.loadImage('pikachu','./images/pikachu.png');
+    this.loadImage('balbasur','./images/balbasur.png');
+    this.loadImage('squirtel','./images/sqirtel.png');
+    this.loadImage('tileSheet','./images/new-map.png');
+    this.loadImage('playerImage','./images/player.png');
+    this.loadImage('squirtelSprite','./images/squirtelSprite.png');
+    this.loadImage('eeveeSprite','./images/eeveeSprite.png');
+    this.loadImage('caterpie','./images/caterpieSprite.png');
+    this.loadImage('pikachuSprite','./images/pokemonSprite.png');
+    this.loadImage('balbasurSprite','./images/balbasurSprite.png');
+    this.loadImage('battleBackground','./images/battleBackground.png');
+    this.loadImage('hpOpponent','./images/hp_opponent.png');
+    this.loadImage('hpPlayer','./images/hp_trainer.png');
+    this.loadImage('attackBackground','./images/btn.jpg');
+    this.loadImage('attackBtn','./images/attack.png');
+  }
 
-function preloader(){
-var imgs = [battleBackground,imagePokemonPlayer,imageWildPokemon,hpPlayer,hpOpponent,attackBackground,attackBtn]
-  var len = imgs.length
-  console.log(imgs.length)
-   var  counter = 0;
-
-   this.startPreloader=function(){
-    [].forEach.call( imgs, function( img ) {
-      img.addEventListener( 'load', incrementCounter, false );
-      } );
-
-      
-   }
-
-   incrementCounter=function() {
-    counter++;
-    if ( counter === len ) {
-    console.log( 'All images loaded!' );
-      }
+  this.loadImage = function(key,source){
+    var image = new Image();
+    image.onload = function(){
+      that.imagesLoaded +=1;
     }
-}
+    image.src = source;
+    that.images[key] = image;
+  }
 
-var preloader = new preloader();
-preloader.startPreloader();
+  this.preloaderInterval =setInterval(function(){
+    if(that.imagesLoaded == that.checkLoadedImages(that.images)){
+      var start = new Start(that);
+      start.startPage();
+      clearInterval(that.preloaderInterval);
+    }
+  })
 
-//preloader.incrementCounter();
+  this.getImage = function(key){
+    return that.images[key];
+  }
 
+  this.checkLoadedImages=function(object){
+    let count = 0;
+    Object.keys(object).forEach(function(element){
+      count += 1;
+    });
+    return count;
+  }
+  this.init();
+  }
+
+var preloader = new Preloader();

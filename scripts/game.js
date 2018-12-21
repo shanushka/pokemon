@@ -4,14 +4,12 @@ var height = document.documentElement.clientHeight;
 var width = document.documentElement.clientWidth;
 var size = 32;
 var pointer = { x: 0, y: 0 }; // The adjusted mouse position
-var tileSheet = new Image();
-tileSheet.src = "./images/new-map.png";
-var playerImage = new Image();
-playerImage.src = "./images/player.png";
-var isBattleOn = false;
 
-function Game(pokemonId) {
-  var player = new Player(300, 1005, pokemonId);
+//playerImage.src = "./images/player.png";
+var isBattleOn = false;
+function Game(pokemonId,preloader) {
+  // container.appendChild(scoreBoard);
+  var player = new Player(300, 1005, pokemonId,preloader);
   var viewport = new Viewport(0, 0, 800, 800);
   var fps, fpsInterval, startTime, now, then, elapsed;
   this.dirX = 0;
@@ -23,7 +21,7 @@ function Game(pokemonId) {
   window.addEventListener("keyup", keyUpEvent);
 
   this.startBattle = function() {
-    var battle = new Battle(player);
+    var battle = new Battle(player, that, preloader);
     battle.transitionToBattle();
   };
   // initialize the timer variables and start the animation
@@ -34,12 +32,14 @@ function Game(pokemonId) {
     this.loop();
   };
   this.loop = function() {
-    var map = new Map(viewport);
+    var map = new Map(viewport,preloader);
+    // ctx.clearRect(0,0,width,height);
     if (isBattleOn) {
       scoreBoard.remove();
       this.startBattle();
       return;
     }
+    container.appendChild(scoreBoard);
     requestAnimationFrame(that.loop.bind(this));
     now = Date.now();
     elapsed = now - then;

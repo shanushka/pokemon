@@ -30,9 +30,9 @@ var pokemonData =[
     type : 'water',
     level: '1',
     attacks :{Bubble:'10',
-              aquaTail:'20',
-              shellAttack:'30',
-              waterTank:'20'}
+              AquaTail:'20',
+              ShellAttack:'30',
+              WaterTank:'20'}
   },
   { id:3,
     name:'Eevee',
@@ -40,7 +40,7 @@ var pokemonData =[
     hp : '70',
     type : 'normal',
     level: '1',
-    attacks :{helpingHand:'10',Tackle:'15',tailWhip:'10',sandAttack:'20'}
+    attacks :{HelpingHand:'10',Tackle:'15',tailWhip:'10',sandAttack:'20'}
   },
   { id:4,
     name:'Caterpie',
@@ -51,6 +51,6 @@ var pokemonData =[
     attacks : {BugBite:'14',
                 Struggle:'15',
                 Tackle:'20',
-                stringShot:'10'}
+                StringShot:'10'}
   }
 ]
