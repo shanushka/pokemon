@@ -1,25 +1,40 @@
-canvas = document.getElementById("myCanvas");
-var ctx = canvas.getContext("2d");
+canvas = document.getElementById('myCanvas');
+var ctx = canvas.getContext('2d');
+var isBattleOn = false;
 var height = document.documentElement.clientHeight;
 var width = document.documentElement.clientWidth;
-var size = 32;
-var pointer = { x: 0, y: 0 }; // The adjusted mouse position
+var scaledSize = 32;
 
-//playerImage.src = "./images/player.png";
-var isBattleOn = false;
-function Game(pokemonId,preloader) {
-  // container.appendChild(scoreBoard);
-  var player = new Player(300, 1005, pokemonId,preloader);
-  var viewport = new Viewport(0, 0, 800, 800);
-  var fps, fpsInterval, startTime, now, then, elapsed;
+function Game(pokemonId, preloader) {
+  const KEY_LEFT = 37;
+  const KEY_RIGHT = 39;
+  const KEY_UP = 38;
+  const KET_DOWN = 40;
+
+  var hpTitle = document.createElement('div');
+  var leftBorder = document.createElement('div');
+  var rightBorder = document.createElement('div');
+  leftBorder.setAttribute('class', 'leftBorder');
+  rightBorder.setAttribute('class', 'rightBorder');
+  container.appendChild(leftBorder);
+  container.appendChild(rightBorder);
+  hpTitle.setAttribute('class', 'hpTitle');
+  var noPokemonTitle = document.createElement('div');
+  noPokemonTitle.setAttribute('class', 'noPokemonTitle');
+  scoreBoard.appendChild(hpTitle);
+  scoreBoard.appendChild(noPokemonTitle);
+  var fpsInterval, startTime, now, then, elapsed;
   this.dirX = 0;
   this.dirY = 0;
   var that = this;
   this.isKeyDown = false;
   this.spriteHeight = 0;
-  window.addEventListener("keydown", keyDownEvent);
-  window.addEventListener("keyup", keyUpEvent);
-
+  var player = new Player(500, 1440, pokemonId, preloader, that);
+  var viewport = new Viewport(0, 0, 1120, 800);
+  if (!isBattleOn) {
+    window.addEventListener('keydown', keyDownEvent);
+    window.addEventListener('keyup', keyUpEvent);
+  }
   this.startBattle = function() {
     var battle = new Battle(player, that, preloader);
     battle.transitionToBattle();
@@ -31,16 +46,18 @@ function Game(pokemonId,preloader) {
     startTime = then;
     this.loop();
   };
+  /*Game loop*/
   this.loop = function() {
-    var map = new Map(viewport,preloader);
-    // ctx.clearRect(0,0,width,height);
+    var map = new Map(viewport, preloader);
     if (isBattleOn) {
       scoreBoard.remove();
       this.startBattle();
       return;
     }
     container.appendChild(scoreBoard);
-    requestAnimationFrame(that.loop.bind(this));
+    hpTitle.innerHTML = 'Hit Point(HP) : ' + player.pokemon.hp;
+    noPokemonTitle.innerHTML = 'Number of Pokemons Collected : ' + player.pokemonArray.length;
+    this.myRequest = requestAnimationFrame(that.loop.bind(this));
     now = Date.now();
     elapsed = now - then;
     // if enough time has elapsed, draw the next frame
@@ -48,8 +65,6 @@ function Game(pokemonId,preloader) {
       // Get ready for next frame by setting then=now, but also adjust for your
       // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
       then = now - (elapsed % fpsInterval);
-      var height = document.documentElement.clientHeight;
-      var width = document.documentElement.clientWidth;
       /* Resize canvas on every frame */
       canvas.height = height;
       canvas.width = width;
@@ -60,9 +75,6 @@ function Game(pokemonId,preloader) {
         player.updateSprite(this.spriteHeight);
       }
       player.drawPlayer(viewport);
-      ctx.strokeStyle = "#ffffff";
-      // ctx.rect(width * 0.5 - viewport.w * 0.5, height * 0.5 - viewport.h * 0.5, viewport.w, viewport.h);
-      // ctx.stroke();
     }
   };
 
@@ -74,26 +86,29 @@ function Game(pokemonId,preloader) {
   }
 
   function keyUpEvent() {
-    (that.dirX = 0), (that.dirY = 0);
+    that.dirX = 0;
+    that.dirY = 0;
     that.isKeyDown = false;
   }
 
   function pressEvent(event) {
-    if (event.keyCode == 37) {
-      that.dirX = -1;
-      that.spriteHeight = 1;
-    }
-    if (event.keyCode == 39) {
-      that.dirX = 1;
-      that.spriteHeight = 2;
-    }
-    if (event.keyCode == 38) {
-      that.dirY = -1;
-      that.spriteHeight = 3;
-    }
-    if (event.keyCode == 40) {
-      that.dirY = 1;
-      that.spriteHeight = 0;
+    switch (event.keyCode) {
+      case KEY_LEFT:
+        that.dirX = -1;
+        that.spriteHeight = 1;
+        break;
+      case KEY_RIGHT:
+        that.dirX = 1;
+        that.spriteHeight = 2;
+        break;
+      case KEY_UP:
+        that.dirY = -1;
+        that.spriteHeight = 3;
+        break;
+      case KET_DOWN:
+        that.dirY = 1;
+        that.spriteHeight = 0;
+        break;
     }
   }
 }

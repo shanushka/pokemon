@@ -10,7 +10,7 @@ function Pokemon(pokemonObject, posX, posY) {
   this.originalPosX = posX;
   this.posY = posY;
   let spritePokemon = 56;
-  let scaledPokemon = 112;
+  let scaledPokemon = 142;
   this.imagePokemon = new Image();
   this.imagePokemon.src = this.img;
 
