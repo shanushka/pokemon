@@ -64,8 +64,7 @@ function Game(pokemonId, preloader) {
     elapsed = now - then;
     // if enough time has elapsed, draw the next frame
     if (elapsed > fpsInterval) {
-      // Get ready for next frame by setting then=now, but also adjust for your
-      // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+      // Get ready for next frame by setting then=now,
       then = now - (elapsed % fpsInterval);
       /* Resize canvas on every frame */
       canvas.height = height;
@@ -82,8 +81,8 @@ function Game(pokemonId, preloader) {
 
   function keyDownEvent() {
     if (!this.isKeyDown) {
-      that.isKeyDown = true;
       pressEvent(event);
+      that.isKeyDown = true;
     }
   }
 

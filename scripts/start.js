@@ -10,7 +10,6 @@ scoreBoard.appendChild(pokemonTitle);
 
 function Start(preloader) {
   var that = this;
-  this.isGame = false;
   canvas.remove();
   pressed.setAttribute('class', 'pressed');
   pressed.innerHTML = 'Press any key to start a new game';
@@ -51,7 +50,6 @@ function Start(preloader) {
       this.pokemonId = 0;
       liPokemon.addEventListener('click', function select(event) {
         if (event.target.id) {
-          that.isGame = true;
           removeFirstPage();
           pokemonTitle.innerHTML += 'Your Pokemon : ' + event.target.className;
           that.pokemonId = event.target.id;
