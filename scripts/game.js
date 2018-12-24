@@ -10,7 +10,7 @@ function Game(pokemonId, preloader) {
   const KEY_RIGHT = 39;
   const KEY_UP = 38;
   const KET_DOWN = 40;
-
+  var audio = new Audio('./songs/Opening.mp3');
   var hpTitle = document.createElement('div');
   var leftBorder = document.createElement('div');
   var rightBorder = document.createElement('div');
@@ -48,8 +48,10 @@ function Game(pokemonId, preloader) {
   };
   /*Game loop*/
   this.loop = function() {
+    audio.play();
     var map = new Map(viewport, preloader);
     if (isBattleOn) {
+      audio.pause();
       scoreBoard.remove();
       this.startBattle();
       return;
