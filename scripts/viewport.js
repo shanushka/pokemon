@@ -7,8 +7,8 @@ const Viewport = function(x, y, w, h) {
 
 Viewport.prototype = {
   scrollTo: function(x, y) {
-    // Smooth scrolling
-    this.x += (x - this.x - this.w * 0.5) * 0.5;
-    this.y += (y - this.y - this.h * 0.5) * 0.5;
+    //  scrolling
+    this.x += x - this.x - this.w * 0.5;
+    this.y += y - this.y - this.h * 0.5;
   }
 };
