@@ -23,12 +23,15 @@ function Game(pokemonId, preloader) {
   noPokemonTitle.setAttribute('class', 'noPokemonTitle');
   scoreBoard.appendChild(hpTitle);
   scoreBoard.appendChild(noPokemonTitle);
-  var fpsInterval, startTime, now, then, elapsed;
+  canvas.height = height;
+  canvas.width = width;
+  var fpsInterval, now, then, elapsed;
   this.dirX = 0;
   this.dirY = 0;
   var that = this;
   this.isKeyDown = false;
   this.spriteHeight = 0;
+
   var player = new Player(500, 1440, pokemonId, preloader, that);
   var viewport = new Viewport(0, 0, 1120, 800);
   if (!isBattleOn) {
@@ -66,13 +69,10 @@ function Game(pokemonId, preloader) {
     if (elapsed > fpsInterval) {
       // Get ready for next frame by setting then=now,
       then = now - (elapsed % fpsInterval);
-      /* Resize canvas on every frame */
-      canvas.height = height;
-      canvas.width = width;
       viewport.scrollTo(player.x, player.y);
       map.drawMap();
       if (this.isKeyDown) {
-        player.moveTo(this.dirX, this.dirY, map, canvas.width, canvas.height);
+        player.moveTo(this.dirX, this.dirY, map);
         player.updateSprite(this.spriteHeight);
       }
       player.drawPlayer(viewport);

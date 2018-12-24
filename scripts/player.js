@@ -77,12 +77,12 @@ var Player = function(x, y, pokemonId, preloader, gameObj) {
 };
 
 Player.prototype = {
-  moveTo: function(dx, dy, map, width, height) {
+  moveTo: function(dx, dy, map) {
     if (this.collideBackground(map, this.xPos + dx, this.yPos + dy)) {
       this.x += dx * scaledSize * 0.25;
       this.y += dy * scaledSize * 0.25;
     }
-    this.collideGrass(map, this.xPos, this.yPos, width, height);
+    this.collideGrass(map, this.xPos, this.yPos);
     this.healHouse(map, this.xPos, this.yPos);
   },
 
